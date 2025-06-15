@@ -28,16 +28,25 @@ function updateQtyTotal() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const formNumber = 'FORM-' + new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14);
+  // Generate confirmation number in format: COL_WLD-YYYYMMDD-XXXX
+  const now = new Date();
+  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+  const randomDigits = Math.floor(1000 + Math.random() * 9000);
+  const formNumber = `COL_WLD-${dateStr}-${randomDigits}`;
+
+  // Fill form
   document.getElementById('form-number').textContent = formNumber;
   document.getElementById('record-form-number').textContent = formNumber;
   document.getElementById('form_number_value').value = formNumber;
+
+  // Event listeners
   document.getElementById('card-form').addEventListener('input', updateQtyTotal);
   document.getElementById('card-form').addEventListener('submit', e => {
     e.preventDefault();
     alert("Form submitted! (Locally — nothing sent)");
   });
 
+  // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');
   }
