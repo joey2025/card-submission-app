@@ -1,6 +1,6 @@
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open('card-submission-v1').then(cache => {
+    caches.open('card-app-v1').then(cache => {
       return cache.addAll([
         '/',
         '/index.html',
