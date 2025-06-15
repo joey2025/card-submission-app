@@ -1,38 +1,40 @@
-// Signature capture
-const canvas = document.getElementById('signature');
-const ctx = canvas.getContext('2d');
-let drawing = false;
+let cardCount = 1;
 
-canvas.addEventListener('mousedown', () => drawing = true);
-canvas.addEventListener('mouseup', () => {
-  drawing = false;
-  ctx.beginPath();
-});
-canvas.addEventListener('mousemove', draw);
-
-function draw(e) {
-  if (!drawing) return;
-  const rect = canvas.getBoundingClientRect();
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = '#000';
-  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+function addLine() {
+  cardCount++;
+  const tbody = document.getElementById('card-rows');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${cardCount}</td>
+    <td><input name="qty_${cardCount}"></td>
+    <td><input name="year_${cardCount}"></td>
+    <td><input name="manufacturer_${cardCount}"></td>
+    <td><input name="setname_${cardCount}"></td>
+    <td><input name="cardnum_${cardCount}"></td>
+    <td><input name="player_${cardCount}"></td>
+    <td><input name="comment_${cardCount}"></td>
+  `;
+  tbody.appendChild(row);
 }
 
-document.getElementById('card-form').addEventListener('submit', e => {
-  e.preventDefault();
-  alert("Form submitted!");
-});
-
-document.getElementById('download-pdf').addEventListener('click', () => {
-  window.print(); // basic fallback
-});
-
-// Register service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log('Service Worker registered'));
+function updateQtyTotal() {
+  let total = 0;
+  for (let i = 1; i <= cardCount; i++) {
+    const val = document.querySelector(`[name='qty_${i}']`)?.value;
+    const num = parseInt(val);
+    if (!isNaN(num)) total += num;
+  }
+  document.getElementById('qty-total').value = total;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const formNumber = 'FORM-' + new Date().toISOString().replace(/[-:.]/g, '').slice(0, 14);
+  document.getElementById('form-number').textContent = formNumber;
+  document.getElementById('record-form-number').textContent = formNumber;
+  document.getElementById('form_number_value').value = formNumber;
+  document.getElementById('card-form').addEventListener('input', updateQtyTotal);
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js');
+  }
+});
