@@ -33,6 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('record-form-number').textContent = formNumber;
   document.getElementById('form_number_value').value = formNumber;
   document.getElementById('card-form').addEventListener('input', updateQtyTotal);
+  document.getElementById('card-form').addEventListener('submit', e => {
+    e.preventDefault();
+    alert("Form submitted! (Locally — nothing sent)");
+  });
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');
