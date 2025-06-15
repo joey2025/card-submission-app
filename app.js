@@ -34,19 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const randomDigits = Math.floor(1000 + Math.random() * 9000);
   const formNumber = `COL_WLD-${dateStr}-${randomDigits}`;
 
-  // Fill form
+  // Fill form number in all the right places
   document.getElementById('form-number').textContent = formNumber;
   document.getElementById('record-form-number').textContent = formNumber;
   document.getElementById('form_number_value').value = formNumber;
 
-  // Event listeners
+  // Handle quantity total updates
   document.getElementById('card-form').addEventListener('input', updateQtyTotal);
+
+  // Prevent default form submission
   document.getElementById('card-form').addEventListener('submit', e => {
     e.preventDefault();
     alert("Form submitted! (Locally — nothing sent)");
   });
 
-  // Register service worker
+  // Register service worker if supported
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js');
   }
