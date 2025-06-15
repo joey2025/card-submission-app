@@ -1,32 +1,140 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="manifest" href="manifest.json" />
-  <title>Card Submission</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Card Grading Submission Form</title>
 </head>
 <body>
-  <h1>Card Submission Form</h1>
-  <form id="card-form">
-    <label>Name:
-      <input type="text" name="name" required />
-    </label><br />
-    <label>Email:
-      <input type="email" name="email" />
-    </label><br />
-    <label>Card Details:
-      <textarea name="details" required></textarea>
-    </label><br />
+  <div class="main-box">
+    <div class="header-company">Collectors' World</div>
+    <div class="header-contact">16675 US 72 • 256-607-7020</div>
 
-    <p>Signature:</p>
-    <canvas id="signature" width="300" height="100" style="border:1px solid #000;"></canvas><br />
+    <h1>CARD GRADING SUBMISSION FORM</h1>
+    <div class="form-number">Confirmation #: {{ form_number }}</div>
 
-    <button type="submit">Submit</button>
-    <button type="button" id="download-pdf">Download PDF</button>
-  </form>
+    <form method="POST" id="card-form">
+      <input type="hidden" name="form_number" value="{{ form_number }}">
 
-  <script src="app.js"></script>
+      <div class="section-title">Contact and Return Shipping Info</div>
+      <table class="contact-grid">
+        <tr><td>SHIP TO</td><td><input name="name" required></td><td>ATTN</td><td><input name="workhome"></td></tr>
+        <tr><td>ADDRESS</td><td><input name="address1" required></td><td>ADDRESS 2</td><td><input name="address2"></td></tr>
+        <tr><td>CITY</td><td><input name="city" required></td><td>ST</td><td><input name="state" required></td></tr>
+        <tr><td>ZIP</td><td><input name="zip" required></td><td>EMAIL</td><td><input name="email" required></td></tr>
+        <tr><td>MOBILE</td><td><input name="mobile"></td><td>DATE</td><td><input name="date" type="date" required></td></tr>
+      </table>
+
+      <div class="section-title">Shipping and Packing Instructions</div>
+      <div class="info-box">
+        <div class="info-left">
+<table style="width: 100%;">
+<tbody>
+<tr>
+<td><strong>Only licensed pack-pulled autographs, 1950 to current will be graded</strong></td>
+<td rowspan="5">
+<div class="info-right"><strong>ORDER SUMMARY</strong><br /><br /> QTY:<br /> <input id="qty-total" style="width: 60px; text-align: center;" readonly="readonly" type="text" /></div>
+</td>
+</tr>
+<tr>
+<td><strong>No oversized cards</strong></td>
+</tr>
+<tr>
+<td><strong>All cards must be in a soft sleeve and in a top loader or card saver.</strong></td>
+</tr>
+<tr>
+<td><strong>No screw downs or magnetics.</strong></td>
+</tr>
+<tr>
+<td><strong>Soft sleeve only is allowed.</strong></td>
+</tr>
+</tbody>
+</table>
+</div>
+      <div class="section-title">List Your Cards</div>
+      <table class="cards" id="card-table">
+        <thead>
+          <tr>
+            <th>Line</th><th>Qty</th><th>Year</th><th>Manufacturer</th>
+            <th>Set Name</th><th>Card#</th><th>Player Name</th><th>Parallel/Variation/Comment</th>
+          </tr>
+        </thead>
+        <tbody id="card-rows">
+          <tr>
+            <td>1</td>
+            <td><input name="qty_1"></td>
+            <td><input name="year_1"></td>
+            <td><input name="manufacturer_1"></td>
+            <td><input name="setname_1"></td>
+            <td><input name="cardnum_1"></td>
+            <td><input name="player_1"></td>
+            <td><input name="comment_1"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="text-align: center;" class="no-print">
+        <button type="button" onclick="addLine()">Add Line</button>
+      </div>
+
+      <div class="section-title">Authorization</div>
+        <div class="info-box">
+          <p>
+            I understand and agree that if my cards are not picked up and paid for in full within 14 days of Collector’s World’s first attempt to notify me of their return from grading, I will voluntarily forfeit ownership of the cards listed above, to Collector’s World. This forfeiture will serve as compensation for the costs incurred for cleaning, submission, shipping, and grading services. I also acknowledge this form is not official until it is signed, delivered, and cards have been verified by Collector’s World.
+          </p>
+        <label class="checkbox-below">
+        <input type="checkbox" name="agree" required> I Agree
+        </label>
+      </div>
+
+      <div class="signature-line">
+        <div>PRINT NAME</div><div>SIGN</div><div>DATE</div>
+      </div>
+
+      <div class="button-row no-print">
+        <div>
+          <button type="submit">Submit</button>
+          <button type="button" onclick="window.print()">Print Form</button>
+        </div>
+        <div class="record-copy">
+          Keep this number for your records:<br>
+          <span>{{ form_number }}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    let cardCount = 1;
+
+    function addLine() {
+      cardCount++;
+      const tbody = document.getElementById('card-rows');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${cardCount}</td>
+        <td><input name="qty_${cardCount}"></td>
+        <td><input name="year_${cardCount}"></td>
+        <td><input name="manufacturer_${cardCount}"></td>
+        <td><input name="setname_${cardCount}"></td>
+        <td><input name="cardnum_${cardCount}"></td>
+        <td><input name="player_${cardCount}"></td>
+        <td><input name="comment_${cardCount}"></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    function updateQtyTotal() {
+      let total = 0;
+      for (let i = 1; i <= cardCount; i++) {
+        const val = document.querySelector(`[name='qty_${i}']`)?.value;
+        const num = parseInt(val);
+        if (!isNaN(num)) total += num;
+      }
+      document.getElementById('qty-total').value = total;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('card-form').addEventListener('input', updateQtyTotal);
+    });
+  </script>
 </body>
 </html>
