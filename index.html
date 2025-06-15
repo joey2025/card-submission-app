@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Card Submission</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Card Submission Form</h1>
+  <form id="card-form">
+    <label>Name:
+      <input type="text" name="name" required />
+    </label><br />
+    <label>Email:
+      <input type="email" name="email" />
+    </label><br />
+    <label>Card Details:
+      <textarea name="details" required></textarea>
+    </label><br />
+
+    <p>Signature:</p>
+    <canvas id="signature" width="300" height="100" style="border:1px solid #000;"></canvas><br />
+
+    <button type="submit">Submit</button>
+    <button type="button" id="download-pdf">Download PDF</button>
+  </form>
+
+  <script src="app.js"></script>
+</body>
+</html>
