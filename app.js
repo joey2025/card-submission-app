@@ -1,4 +1,3 @@
-
 let cardCount = 1;
 
 function addLine() {
@@ -30,6 +29,18 @@ function updateQtyTotal() {
 
 function handleSubmissionAndPrint() {
   const form = document.getElementById('card-form');
+
+  // Validate required fields
+  if (!form.checkValidity()) {
+    alert("Please fill out all required fields.");
+    return;
+  }
+
+  if (!form.agree.checked) {
+    alert("You must agree to the terms before printing.");
+    return;
+  }
+
   const formData = new FormData(form);
   const data = {};
 
@@ -42,7 +53,9 @@ function handleSubmissionAndPrint() {
   fetch("https://script.google.com/macros/s/AKfycby4w6hfhk13DO_QF8vUDtM8-PfPN54XC9ZMg8VqGjLOwpTyyBFkufDErpabV1ML9gS7/exec", {
     method: "POST",
     body: JSON.stringify(data),
-    headers: {"Content-Type": "application/json" }
+    headers: {
+      "Content-Type": "application/json"
+    }
   })
   .then(response => response.text())
   .then(result => {
@@ -51,7 +64,7 @@ function handleSubmissionAndPrint() {
   })
   .catch(error => {
     console.error("Logging failed:", error);
-    window.print();
+    window.print(); // Still allow print
   });
 }
 
