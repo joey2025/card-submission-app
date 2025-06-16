@@ -1,3 +1,4 @@
+
 let cardCount = 1;
 
 function addLine() {
@@ -36,11 +37,9 @@ function handleSubmissionAndPrint() {
     data[key] = value;
   }
 
-  // Add confirmation number explicitly
   data.form_number = document.getElementById('form_number_value').value;
 
-  // ✅ SEND TO GOOGLE SHEETS
-  fetch("https://script.google.com/macros/library/d/18BY8_FO-M_WeXDodRMoLx0NmI8QCKuzrTKEQRFPnEu6MtLZpqNGG7EBt/1", {
+  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -54,12 +53,11 @@ function handleSubmissionAndPrint() {
   })
   .catch(error => {
     console.error("Logging failed:", error);
-    window.print(); // Still allow print
+    window.print();
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Generate confirmation number: COL_WLD-YYYYMMDD-XXXX
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
   const randomDigits = Math.floor(1000 + Math.random() * 9000);
