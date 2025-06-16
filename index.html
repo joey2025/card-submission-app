@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Card Grading Submission Form</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
+  <script defer src="app.js"></script>
 </head>
 <body>
   <div class="main-box">
     <div class="header-company">Collectors' World</div>
     <div class="header-contact">16675 US 72 • 256-607-7020</div>
+
     <h1>CARD GRADING SUBMISSION FORM</h1>
+
     <form id="card-form">
-      <input type="hidden" id="form_number_value" name="form_number">
+      <input type="hidden" name="form_number">
 
       <div class="section-title">Contact and Return Shipping Info</div>
       <table class="contact-grid">
@@ -26,22 +26,21 @@
 
       <div class="section-title">Shipping and Packing Instructions</div>
       <div class="info-box">
-        <table style="width: 100%;">
-          <tbody>
-            <tr>
-              <td><strong>Only licensed pack-pulled autographs, 1950 to current will be graded</strong></td>
+        <div class="info-left">
+          <table style="width: 100%;">
+            <tr><td><strong>Only licensed pack-pulled autographs, 1950 to current will be graded</strong></td>
               <td rowspan="5">
                 <div class="info-right"><strong>ORDER SUMMARY</strong><br><br>QTY:<br>
-                  <input id="qty-total" style="width: 60px; text-align: center;" readonly type="text">
+                  <input id="qty-total" readonly style="width: 60px; text-align: center;">
                 </div>
               </td>
             </tr>
             <tr><td><strong>No oversized cards</strong></td></tr>
-            <tr><td><strong>All cards must be in a soft sleeve and in a top loader or card saver.</strong></td></tr>
-            <tr><td><strong>No screw downs or magnetics.</strong></td></tr>
-            <tr><td><strong>Soft sleeve only is allowed.</strong></td></tr>
-          </tbody>
-        </table>
+            <tr><td><strong>All cards must be in soft sleeve and top loader/card saver</strong></td></tr>
+            <tr><td><strong>No screw downs or magnetics</strong></td></tr>
+            <tr><td><strong>Soft sleeve only is allowed</strong></td></tr>
+          </table>
+        </div>
       </div>
 
       <div class="section-title">List Your Cards</div>
@@ -73,7 +72,7 @@
       <div class="section-title">Authorization</div>
       <div class="info-box">
         <p>
-          I understand and agree that if my cards are not picked up and paid for in full within 14 days of Collector’s World’s first attempt to notify me of their return from grading, I will voluntarily forfeit ownership of the cards listed above, to Collector’s World. This forfeiture will serve as compensation for the costs incurred for cleaning, submission, shipping, and grading services. I also acknowledge this form is not official until it is signed, delivered, and cards have been verified by Collector’s World.
+          I understand and agree that if my cards are not picked up and paid for within 14 days, I forfeit ownership of the cards to Collector’s World. This serves as compensation for services rendered.
         </p>
         <label class="checkbox-below">
           <input type="checkbox" name="agree" required> I Agree
@@ -85,18 +84,14 @@
       </div>
 
       <div class="button-row no-print">
-        <div>
-          <button type="button" onclick="submitFormData()">Submit Form</button>
-          <button type="button" onclick="printFormOnly()">Print Form</button>
-        </div>
+        <button type="button" onclick="submitFormData()">Submit</button>
+        <button type="button" onclick="printForm()">Print Form</button>
         <div class="record-copy">
           Keep this number for your records:<br>
-          <span id="record-form-number"></span>
+          <span id="confirm-number-bottom"></span>
         </div>
       </div>
     </form>
   </div>
-
-  <script src="app.js"></script>
 </body>
 </html>
