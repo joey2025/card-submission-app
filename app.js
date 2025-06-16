@@ -49,7 +49,7 @@ function submitFormData() {
 
   data.form_number = document.getElementById('form_number_value').value;
 
-  fetch("https://script.google.com/macros/s/AKfycbzvh18KKX3FHd2HVK3KayjCZLM8sKIIKYdCT68LG5og5l-cpDUveJ-FpBOj2HCboXgC/exec", {
+  fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
