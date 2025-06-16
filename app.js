@@ -9,11 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // 🔥 Add this line to bind the first qty field (qty_1)
+  document.getElementById("card-form").addEventListener("input", updateQtyTotal);
+
+  // 🔥 ADD THIS LINE
   const firstQty = document.querySelector(`input[name='qty_1']`);
   if (firstQty) {
     firstQty.addEventListener("input", updateQtyTotal);
   }
+
+  // Optional: recalculate if value is preloaded
+  updateQtyTotal();
 });
 
 function addLine() {
