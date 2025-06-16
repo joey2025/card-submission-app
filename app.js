@@ -39,8 +39,8 @@ function handleSubmissionAndPrint() {
   // Add confirmation number explicitly
   data.form_number = document.getElementById('form_number_value').value;
 
-  // Send data to Google Sheets
-  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+  // ✅ SEND TO GOOGLE SHEETS
+  fetch("https://script.google.com/macros/library/d/18BY8_FO-M_WeXDodRMoLx0NmI8QCKuzrTKEQRFPnEu6MtLZpqNGG7EBt/1", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -59,7 +59,7 @@ function handleSubmissionAndPrint() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Generate confirmation number in format: COL_WLD-YYYYMMDD-XXXX
+  // Generate confirmation number: COL_WLD-YYYYMMDD-XXXX
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
   const randomDigits = Math.floor(1000 + Math.random() * 9000);
