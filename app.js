@@ -28,20 +28,38 @@ function updateQtyTotal() {
 }
 
 function handleSubmissionAndPrint() {
-  // Simulate form submission logic
-  console.log("Form data submitted:");
-  const formData = new FormData(document.getElementById('card-form'));
+  const form = document.getElementById('card-form');
+  const formData = new FormData(form);
+  const data = {};
+
   for (const [key, value] of formData.entries()) {
-    console.log(`${key}: ${value}`);
+    data[key] = value;
   }
 
-  // Optionally save or send somewhere here...
+  // Add confirmation number explicitly
+  data.form_number = document.getElementById('form_number_value').value;
 
-  // Trigger print
-  window.print();
+  // Send data to Google Sheets
+  fetch("YOUR_GOOGLE_SCRIPT_URL", {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => response.text())
+  .then(result => {
+    console.log("Logged to Google Sheets:", result);
+    window.print();
+  })
+  .catch(error => {
+    console.error("Logging failed:", error);
+    window.print(); // Still allow print
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Generate confirmation number in format: COL_WLD-YYYYMMDD-XXXX
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
   const randomDigits = Math.floor(1000 + Math.random() * 9000);
