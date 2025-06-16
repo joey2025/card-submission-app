@@ -28,6 +28,10 @@ function addLine() {
     <td><input name="comment_${cardCount}" /></td>
   `;
   tbody.appendChild(row);
+
+  // Add input listener to the new qty field
+  const qtyInput = row.querySelector(`input[name="qty_${cardCount}"]`);
+  qtyInput.addEventListener("input", updateQtyTotal);
 }
 
 function updateQtyTotal() {
