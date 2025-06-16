@@ -1,13 +1,15 @@
 let cardCount = 1;
 
-// Generate form number
+// Generate confirmation number
 const now = new Date();
-const formNumber = `COL_WLD-${now.toISOString().slice(0,10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
 
-// Set confirmation number in DOM
+// Once the page loads
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
+
+  // Hook into input events to update total quantity
   document.getElementById("card-form").addEventListener("input", updateQtyTotal);
 });
 
@@ -17,13 +19,13 @@ function addLine() {
   const row = document.createElement("tr");
   row.innerHTML = `
     <td>${cardCount}</td>
-    <td><input name="qty_${cardCount}"></td>
-    <td><input name="year_${cardCount}"></td>
-    <td><input name="manufacturer_${cardCount}"></td>
-    <td><input name="setname_${cardCount}"></td>
-    <td><input name="cardnum_${cardCount}"></td>
-    <td><input name="player_${cardCount}"></td>
-    <td><input name="comment_${cardCount}"></td>
+    <td><input name="qty_${cardCount}" /></td>
+    <td><input name="year_${cardCount}" /></td>
+    <td><input name="manufacturer_${cardCount}" /></td>
+    <td><input name="setname_${cardCount}" /></td>
+    <td><input name="cardnum_${cardCount}" /></td>
+    <td><input name="player_${cardCount}" /></td>
+    <td><input name="comment_${cardCount}" /></td>
   `;
   tbody.appendChild(row);
 }
@@ -31,22 +33,27 @@ function addLine() {
 function updateQtyTotal() {
   let total = 0;
   for (let i = 1; i <= cardCount; i++) {
-    const val = document.querySelector(`[name='qty_${i}']`)?.value;
+    const qtyInput = document.querySelector(`[name='qty_${i}']`);
+    const val = qtyInput?.value;
     const num = parseInt(val);
-    if (!isNaN(num)) total += num;
+    if (!isNaN(num)) {
+      total += num;
+    }
   }
   document.getElementById("qty-total").value = total;
 }
 
 async function submitFormData() {
   const form = document.getElementById("card-form");
+
+  // Manual check to ensure checkbox is selected
   if (!form.checkValidity()) {
-    alert("Please fill out all required fields and check the agreement box.");
+    alert("Please fill out all required fields and agree to the terms.");
     return;
   }
 
   const formData = new FormData(form);
-  formData.set("form_number", formNumber); // override with actual generated form number
+  formData.set("form_number", formNumber);
 
   const jsonData = {};
   formData.forEach((value, key) => {
@@ -54,12 +61,13 @@ async function submitFormData() {
   });
 
   try {
-    const response = await fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
       method: "POST",
-      mode: "no-cors", // no-cors to prevent CORS issues with Apps Script
+      mode: "no-cors", // Use no-cors to avoid CORS issues with Google Scripts
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(jsonData)
     });
+
     alert("Submission successful!");
   } catch (error) {
     console.error("Logging failed:", error);
