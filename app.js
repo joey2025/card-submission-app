@@ -42,9 +42,7 @@ function handleSubmissionAndPrint() {
   fetch("https://script.google.com/macros/s/AKfycby4w6hfhk13DO_QF8vUDtM8-PfPN54XC9ZMg8VqGjLOwpTyyBFkufDErpabV1ML9gS7/exec", {
     method: "POST",
     body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
+    headers: {"Content-Type": "application/json" }
   })
   .then(response => response.text())
   .then(result => {
