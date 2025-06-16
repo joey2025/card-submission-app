@@ -27,17 +27,16 @@ function updateQtyTotal() {
   document.getElementById('qty-total').value = total;
 }
 
-function handleSubmissionAndPrint() {
+function submitFormData() {
   const form = document.getElementById('card-form');
 
-  // Validate required fields
   if (!form.checkValidity()) {
     alert("Please fill out all required fields.");
     return;
   }
 
   if (!form.agree.checked) {
-    alert("You must agree to the terms before printing.");
+    alert("You must agree to the terms before submitting.");
     return;
   }
 
@@ -50,7 +49,7 @@ function handleSubmissionAndPrint() {
 
   data.form_number = document.getElementById('form_number_value').value;
 
-  fetch("https://script.google.com/macros/library/d/18BY8_FO-M_WeXDodRMoLx0NmI8QCKuzrTKEQRFPnEu6MtLZpqNGG7EBt/1", {
+  fetch("https://script.google.com/macros/s/AKfycbzvh18KKX3FHd2HVK3KayjCZLM8sKIIKYdCT68LG5og5l-cpDUveJ-FpBOj2HCboXgC/exec", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -60,12 +59,16 @@ function handleSubmissionAndPrint() {
   .then(response => response.text())
   .then(result => {
     console.log("Logged to Google Sheets:", result);
-    window.print();
+    alert("Form submitted successfully!");
   })
   .catch(error => {
     console.error("Logging failed:", error);
-    window.print(); // Still allow print
+    alert("Submission failed. Please try again.");
   });
+}
+
+function printFormOnly() {
+  window.print();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
