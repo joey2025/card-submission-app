@@ -39,7 +39,7 @@ function handleSubmissionAndPrint() {
 
   data.form_number = document.getElementById('form_number_value').value;
 
-  fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec", {
+  fetch("https://script.google.com/macros/s/AKfycby4w6hfhk13DO_QF8vUDtM8-PfPN54XC9ZMg8VqGjLOwpTyyBFkufDErpabV1ML9gS7/exec", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
