@@ -1,9 +1,20 @@
 let cardCount = 1;
 
+// Generate form number
+const now = new Date();
+const formNumber = `COL_WLD-${now.toISOString().slice(0,10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+
+// Set confirmation number in DOM
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
+  document.getElementById("confirm-number-bottom").textContent = formNumber;
+  document.getElementById("card-form").addEventListener("input", updateQtyTotal);
+});
+
 function addLine() {
   cardCount++;
-  const tbody = document.getElementById('card-rows');
-  const row = document.createElement('tr');
+  const tbody = document.getElementById("card-rows");
+  const row = document.createElement("tr");
   row.innerHTML = `
     <td>${cardCount}</td>
     <td><input name="qty_${cardCount}"></td>
@@ -24,66 +35,38 @@ function updateQtyTotal() {
     const num = parseInt(val);
     if (!isNaN(num)) total += num;
   }
-  document.getElementById('qty-total').value = total;
+  document.getElementById("qty-total").value = total;
 }
 
-function submitFormData() {
-  const form = document.getElementById('card-form');
-
+async function submitFormData() {
+  const form = document.getElementById("card-form");
   if (!form.checkValidity()) {
-    alert("Please fill out all required fields.");
-    return;
-  }
-
-  if (!form.agree.checked) {
-    alert("You must agree to the terms before submitting.");
+    alert("Please fill out all required fields and check the agreement box.");
     return;
   }
 
   const formData = new FormData(form);
-  const data = {};
+  formData.set("form_number", formNumber); // override with actual generated form number
 
-  for (const [key, value] of formData.entries()) {
-    data[key] = value;
-  }
+  const jsonData = {};
+  formData.forEach((value, key) => {
+    jsonData[key] = value;
+  });
 
-  data.form_number = document.getElementById('form_number_value').value;
-
-  fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
-  .then(response => response.text())
-  .then(result => {
-    console.log("Logged to Google Sheets:", result);
-    alert("Form submitted successfully!");
-  })
-  .catch(error => {
+  try {
+    const response = await fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
+      method: "POST",
+      mode: "no-cors", // no-cors to prevent CORS issues with Apps Script
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(jsonData)
+    });
+    alert("Submission successful!");
+  } catch (error) {
     console.error("Logging failed:", error);
     alert("Submission failed. Please try again.");
-  });
+  }
 }
 
-function printFormOnly() {
+function printForm() {
   window.print();
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const now = new Date();
-  const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-  const randomDigits = Math.floor(1000 + Math.random() * 9000);
-  const formNumber = `COL_WLD-${dateStr}-${randomDigits}`;
-
-  document.getElementById('form-number').textContent = formNumber;
-  document.getElementById('record-form-number').textContent = formNumber;
-  document.getElementById('form_number_value').value = formNumber;
-
-  document.getElementById('card-form').addEventListener('input', updateQtyTotal);
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js');
-  }
-});
