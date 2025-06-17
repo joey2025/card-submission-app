@@ -5,25 +5,26 @@ const now = new Date();
 const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Set confirmation numbers
-  document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
-  document.getElementById("confirm-number-bottom").textContent = formNumber;
+  // Set confirmation number in top and bottom
+  const confirmTop = document.getElementById("confirm-number");
+  const confirmBottom = document.getElementById("confirm-number-bottom");
+  if (confirmTop) confirmTop.textContent = `Confirmation #: ${formNumber}`;
+  if (confirmBottom) confirmBottom.textContent = formNumber;
 
-  // Watch all qty fields added later
+  // Attach qty_1 input listener manually
+  const qty1 = document.querySelector("input[name='qty_1']");
+  if (qty1) {
+    qty1.addEventListener("input", updateQtyTotal);
+  }
+
+  // Watch all input events in the form
   document.getElementById("card-form").addEventListener("input", (e) => {
     if (e.target.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
-  // 🔥 Attach listener to qty_1 manually
-  const qty1 = document.querySelector("input[name='qty_1']");
-  if (qty1) {
-    qty1.addEventListener("input", updateQtyTotal);
-  }
-
-  // Run once to initialize
-  updateQtyTotal();
+  updateQtyTotal(); // initialize on load
 });
 
 function addLine() {
@@ -42,22 +43,25 @@ function addLine() {
   `;
   tbody.appendChild(row);
 
-  // 🔥 Attach qty listener for new row
+  // Add event listener to new qty input
   const qtyInput = row.querySelector(`input[name="qty_${cardCount}"]`);
-  qtyInput.addEventListener("input", updateQtyTotal);
+  if (qtyInput) {
+    qtyInput.addEventListener("input", updateQtyTotal);
+  }
 }
 
 function updateQtyTotal() {
   let total = 0;
   for (let i = 1; i <= cardCount; i++) {
-    const qtyInput = document.querySelector(`[name='qty_${i}']`);
-    const val = qtyInput?.value;
+    const input = document.querySelector(`input[name='qty_${i}']`);
+    const val = input?.value.trim();
     const num = parseInt(val);
     if (!isNaN(num)) {
       total += num;
     }
   }
-  document.getElementById("qty-total").value = total;
+  const qtyBox = document.getElementById("qty-total");
+  if (qtyBox) qtyBox.value = total;
 }
 
 async function submitFormData() {
