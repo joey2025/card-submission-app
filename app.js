@@ -13,9 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Attach qty_1 input listener manually
   const qty1 = document.querySelector("input[name='qty_1']");
-  if (qty1) {
-    qty1.addEventListener("input", updateQtyTotal);
-  }
+  if (qty1) qty1.addEventListener("input", updateQtyTotal);
 
   // Watch all input events in the form
   document.getElementById("card-form").addEventListener("input", (e) => {
@@ -45,9 +43,7 @@ function addLine() {
 
   // Add event listener to new qty input
   const qtyInput = row.querySelector(`input[name="qty_${cardCount}"]`);
-  if (qtyInput) {
-    qtyInput.addEventListener("input", updateQtyTotal);
-  }
+  if (qtyInput) qtyInput.addEventListener("input", updateQtyTotal);
 }
 
 function updateQtyTotal() {
@@ -85,9 +81,7 @@ function clearForm() {
 
   // Reattach qty_1 input listener
   const qty1 = document.querySelector("input[name='qty_1']");
-  if (qty1) {
-    qty1.addEventListener("input", updateQtyTotal);
-  }
+  if (qty1) qty1.addEventListener("input", updateQtyTotal);
 
   updateQtyTotal();
 
@@ -131,10 +125,11 @@ async function submitFormData() {
   }
 }
 
-// ⬇️ Make functions globally accessible for inline onclick handlers
+// Global exposure
 window.addLine = addLine;
 window.updateQtyTotal = updateQtyTotal;
 window.submitFormData = submitFormData;
 window.printForm = () => {
   alert("Please submit the form before printing.");
 };
+window.clearForm = clearForm;
