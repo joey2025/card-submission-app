@@ -43,7 +43,7 @@ function addLine() {
 }
 
 function updateQtyTotal() {
-  let total = 0;
+  let total = 1;
 
   for (let i = 1; i <= cardCount; i++) {
     const field = document.querySelector(`[name="qty_${i}"]`);
