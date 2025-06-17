@@ -104,3 +104,4 @@ window.addLine = addLine;
 window.updateQtyTotal = updateQtyTotal;
 window.submitFormData = submitFormData;
 window.printForm = printForm;
+window.submitThenPrint = submitThenPrint;
