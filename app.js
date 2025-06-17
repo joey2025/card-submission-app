@@ -67,7 +67,7 @@ async function submitFormData() {
   });
 
   try {
-    await fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
+    await fetch("https://script.google.com/macros/s/AKfycbwjgEbDaAhrJlfPtB1G3Y0RUlo9wteGwQ9axr3AB-OP2oEGGO4__HVB1FyhX4ra-AeM/exec", {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
