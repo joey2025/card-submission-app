@@ -6,17 +6,24 @@ const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-
 
 // Once the DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-  // Set confirmation numbers
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // Add input listener to entire form (captures dynamic and static qty fields)
+  // Attach to the entire form for dynamic lines
   document.getElementById("card-form").addEventListener("input", (e) => {
-    if (e.target && e.target.name && e.target.name.startsWith("qty_")) {
+    if (e.target?.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
+  // 🔥 Ensure qty_1 is hooked up manually
+  const firstQty = document.querySelector('input[name="qty_1"]');
+  if (firstQty) {
+    firstQty.addEventListener("input", updateQtyTotal);
+  }
+
+  updateQtyTotal(); // in case value is pre-filled
+});
   // Also trigger initial total in case qty_1 is prefilled
   updateQtyTotal();
 });
