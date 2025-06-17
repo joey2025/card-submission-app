@@ -4,22 +4,22 @@ let cardCount = 1;
 const now = new Date();
 const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
 
-// Once the page loads
 document.addEventListener("DOMContentLoaded", () => {
+  // Set confirmation numbers
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  document.getElementById("card-form").addEventListener("input", updateQtyTotal);
+  // Watch all changes inside the form
+  document.getElementById("card-form").addEventListener("input", (e) => {
+    if (e.target.name?.startsWith("qty_")) {
+      updateQtyTotal();
+    }
+  });
 
-  // 🔥 ADD THIS LINE
-  const firstQty = document.querySelector(`input[name='qty_1']`);
-  if (firstQty) {
-    firstQty.addEventListener("input", updateQtyTotal);
-  }
-
-  // Optional: recalculate if value is preloaded
+  // Trigger initial total in case of prefilled values
   updateQtyTotal();
 });
+
 
 function addLine() {
   cardCount++;
