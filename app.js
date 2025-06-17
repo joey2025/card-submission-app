@@ -24,9 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   updateQtyTotal(); // in case value is pre-filled
 });
-  // Also trigger initial total in case qty_1 is prefilled
-  updateQtyTotal();
-});
 
 function addLine() {
   cardCount++;
