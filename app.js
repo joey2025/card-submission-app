@@ -2,7 +2,7 @@ let cardCount = 1;
 
 // Generate confirmation number
 const now = new Date();
-const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+let formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
 
 document.addEventListener("DOMContentLoaded", () => {
   // Set confirmation number in top and bottom
@@ -64,6 +64,40 @@ function updateQtyTotal() {
   if (qtyBox) qtyBox.value = total;
 }
 
+function clearForm() {
+  const form = document.getElementById("card-form");
+  form.reset();
+
+  // Reset card rows to only one line
+  document.getElementById("card-rows").innerHTML = `
+    <tr>
+      <td>1</td>
+      <td><input name="qty_1"></td>
+      <td><input name="year_1"></td>
+      <td><input name="manufacturer_1"></td>
+      <td><input name="setname_1"></td>
+      <td><input name="cardnum_1"></td>
+      <td><input name="player_1"></td>
+      <td><input name="comment_1"></td>
+    </tr>
+  `;
+  cardCount = 1;
+
+  // Reattach qty_1 input listener
+  const qty1 = document.querySelector("input[name='qty_1']");
+  if (qty1) {
+    qty1.addEventListener("input", updateQtyTotal);
+  }
+
+  updateQtyTotal();
+
+  // Regenerate confirmation number
+  const now = new Date();
+  formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+  document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
+  document.getElementById("confirm-number-bottom").textContent = formNumber;
+}
+
 async function submitFormData() {
   const form = document.getElementById("card-form");
 
@@ -89,18 +123,18 @@ async function submitFormData() {
     });
 
     alert("Submission successful!");
+    window.print();
+    clearForm();
   } catch (error) {
     console.error("Logging failed:", error);
     alert("Submission failed. Please try again.");
   }
 }
 
-function printForm() {
-  window.print();
-}
-
 // ⬇️ Make functions globally accessible for inline onclick handlers
 window.addLine = addLine;
 window.updateQtyTotal = updateQtyTotal;
 window.submitFormData = submitFormData;
-window.printForm = printForm;
+window.printForm = () => {
+  alert("Please submit the form before printing.");
+};
