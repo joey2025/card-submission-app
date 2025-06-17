@@ -9,16 +9,23 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // Watch all changes inside the form
+  // Watch all changes in dynamically added fields
   document.getElementById("card-form").addEventListener("input", (e) => {
     if (e.target.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
-  // Trigger initial total in case of prefilled values
+  // 🔥 Explicitly attach input listener to initial qty_1
+  const qty1 = document.querySelector("input[name='qty_1']");
+  if (qty1) {
+    qty1.addEventListener("input", updateQtyTotal);
+  }
+
+  // Trigger total at start in case of prefilled qty
   updateQtyTotal();
 });
+
 
 
 function addLine() {
