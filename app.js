@@ -9,24 +9,22 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // Watch all changes in dynamically added fields
+  // Watch all qty fields added later
   document.getElementById("card-form").addEventListener("input", (e) => {
     if (e.target.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
-  // 🔥 Explicitly attach input listener to initial qty_1
+  // 🔥 Attach listener to qty_1 manually
   const qty1 = document.querySelector("input[name='qty_1']");
   if (qty1) {
     qty1.addEventListener("input", updateQtyTotal);
   }
 
-  // Trigger total at start in case of prefilled qty
+  // Run once to initialize
   updateQtyTotal();
 });
-
-
 
 function addLine() {
   cardCount++;
@@ -44,7 +42,7 @@ function addLine() {
   `;
   tbody.appendChild(row);
 
-  // Add input listener to the new qty field
+  // 🔥 Attach qty listener for new row
   const qtyInput = row.querySelector(`input[name="qty_${cardCount}"]`);
   qtyInput.addEventListener("input", updateQtyTotal);
 }
@@ -65,7 +63,6 @@ function updateQtyTotal() {
 async function submitFormData() {
   const form = document.getElementById("card-form");
 
-  // Manual check to ensure checkbox is selected
   if (!form.checkValidity()) {
     alert("Please fill out all required fields and agree to the terms.");
     return;
@@ -82,7 +79,7 @@ async function submitFormData() {
   try {
     await fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
       method: "POST",
-      mode: "no-cors", // Use no-cors to avoid CORS issues with Google Scripts
+      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(jsonData)
     });
