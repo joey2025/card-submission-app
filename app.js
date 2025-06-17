@@ -43,17 +43,14 @@ function addLine() {
 }
 
 function updateQtyTotal() {
-  let total = 1;
-
-  for (let i = 1; i <= cardCount; i++) {
-    const field = document.querySelector(`[name="qty_${i}"]`);
-    if (field) {
-      const value = parseInt(field.value);
-      if (!isNaN(value)) {
-        total += value;
+      let total = 0;
+      for (let i = 1; i <= cardCount; i++) {
+        const val = document.querySelector(`[name='qty_${i}']`)?.value;
+        const num = parseInt(val);
+        if (!isNaN(num)) total += num;
       }
+      document.getElementById('qty-total').value = total;
     }
-  }
 
   const qtyBox = document.getElementById("qty-total");
   if (qtyBox) {
