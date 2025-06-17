@@ -98,3 +98,9 @@ async function submitFormData() {
 function printForm() {
   window.print();
 }
+
+// ⬇️ Make functions globally accessible for inline onclick handlers
+window.addLine = addLine;
+window.updateQtyTotal = updateQtyTotal;
+window.submitFormData = submitFormData;
+window.printForm = printForm;
