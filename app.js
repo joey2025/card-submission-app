@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateQtyTotal();
+  const submitPrintBtn = document.getElementById("submitPrintBtn");
+  if (submitPrintBtn) {
+    submitPrintBtn.addEventListener("click", submitThenPrint);
+  }
 });
 
 function addLine() {
