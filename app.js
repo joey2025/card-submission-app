@@ -1,29 +1,25 @@
 let cardCount = 1;
 
-// Generate form number
+// Generate confirmation number
 const now = new Date();
 const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
 
-// Once the DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
+  // Set confirmation numbers
   document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // Attach to the entire form for dynamic lines
+  // Watch all changes inside the form
   document.getElementById("card-form").addEventListener("input", (e) => {
-    if (e.target?.name?.startsWith("qty_")) {
+    if (e.target.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
-  // 🔥 Ensure qty_1 is hooked up manually
-  const firstQty = document.querySelector('input[name="qty_1"]');
-  if (firstQty) {
-    firstQty.addEventListener("input", updateQtyTotal);
-  }
-
-  updateQtyTotal(); // in case value is pre-filled
+  // Trigger initial total in case of prefilled values
+  updateQtyTotal();
 });
+
 
 function addLine() {
   cardCount++;
@@ -40,29 +36,31 @@ function addLine() {
     <td><input name="comment_${cardCount}" /></td>
   `;
   tbody.appendChild(row);
+
+  // Add input listener to the new qty field
+  const qtyInput = row.querySelector(`input[name="qty_${cardCount}"]`);
+  qtyInput.addEventListener("input", updateQtyTotal);
 }
 
 function updateQtyTotal() {
-      let total = 0;
-      for (let i = 1; i <= cardCount; i++) {
-        const val = document.querySelector(`[name='qty_${i}']`)?.value;
-        const num = parseInt(val);
-        if (!isNaN(num)) total += num;
-      }
-      document.getElementById('qty-total').value = total;
+  let total = 0;
+  for (let i = 1; i <= cardCount; i++) {
+    const qtyInput = document.querySelector(`[name='qty_${i}']`);
+    const val = qtyInput?.value;
+    const num = parseInt(val);
+    if (!isNaN(num)) {
+      total += num;
     }
-
-  const qtyBox = document.getElementById("qty-total");
-  if (qtyBox) {
-    qtyBox.value = total;
   }
+  document.getElementById("qty-total").value = total;
 }
 
 async function submitFormData() {
   const form = document.getElementById("card-form");
 
+  // Manual check to ensure checkbox is selected
   if (!form.checkValidity()) {
-    alert("Please fill out all required fields and check the agreement box.");
+    alert("Please fill out all required fields and agree to the terms.");
     return;
   }
 
@@ -77,10 +75,8 @@ async function submitFormData() {
   try {
     await fetch("https://script.google.com/macros/s/AKfycby9-6QgPiGtlVgWEsm7bg3UxP9rt-BP9NE5NZemfFHtEASj2WeCgKzsKc4hrRaADSYY/exec", {
       method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      mode: "no-cors", // Use no-cors to avoid CORS issues with Google Scripts
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(jsonData)
     });
 
