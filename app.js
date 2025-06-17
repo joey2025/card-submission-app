@@ -2,21 +2,19 @@ let cardCount = 1;
 
 // Generate confirmation number
 const now = new Date();
-const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+let formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Set confirmation numbers
+  document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // Watch for qty input changes and calculate total
   document.getElementById("card-form").addEventListener("input", (e) => {
     if (e.target.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
-  // Trigger qty calculation initially
-  updateQtyTotal();
+  updateQtyTotal(); // Initial total
 });
 
 function addLine() {
@@ -25,26 +23,25 @@ function addLine() {
   const row = document.createElement("tr");
   row.innerHTML = `
     <td>${cardCount}</td>
-    <td><input name="qty_${cardCount}"></td>
-    <td><input name="year_${cardCount}"></td>
-    <td><input name="manufacturer_${cardCount}"></td>
-    <td><input name="setname_${cardCount}"></td>
-    <td><input name="cardnum_${cardCount}"></td>
-    <td><input name="player_${cardCount}"></td>
-    <td><input name="comment_${cardCount}"></td>
+    <td><input name="qty_${cardCount}" /></td>
+    <td><input name="year_${cardCount}" /></td>
+    <td><input name="manufacturer_${cardCount}" /></td>
+    <td><input name="setname_${cardCount}" /></td>
+    <td><input name="cardnum_${cardCount}" /></td>
+    <td><input name="player_${cardCount}" /></td>
+    <td><input name="comment_${cardCount}" /></td>
   `;
   tbody.appendChild(row);
+
+  row.querySelector(`input[name="qty_${cardCount}"]`).addEventListener("input", updateQtyTotal);
 }
 
 function updateQtyTotal() {
   let total = 0;
   for (let i = 1; i <= cardCount; i++) {
-    const qtyInput = document.querySelector(`[name='qty_${i}']`);
-    const val = qtyInput?.value;
-    const num = parseInt(val);
-    if (!isNaN(num)) {
-      total += num;
-    }
+    const input = document.querySelector(`[name="qty_${i}"]`);
+    const val = parseInt(input?.value);
+    if (!isNaN(val)) total += val;
   }
   document.getElementById("qty-total").value = total;
 }
@@ -87,7 +84,36 @@ async function submitThenPrint() {
   const success = await submitFormData();
   if (success) {
     window.print();
+    clearForm(); // Reset after printing
   } else {
     alert("Form submission failed. Please correct errors before printing.");
   }
+}
+
+function clearForm() {
+  const form = document.getElementById("card-form");
+  form.reset();
+
+  // Clear card rows except the first
+  const tbody = document.getElementById("card-rows");
+  tbody.innerHTML = `
+    <tr>
+      <td>1</td>
+      <td><input name="qty_1" /></td>
+      <td><input name="year_1" /></td>
+      <td><input name="manufacturer_1" /></td>
+      <td><input name="setname_1" /></td>
+      <td><input name="cardnum_1" /></td>
+      <td><input name="player_1" /></td>
+      <td><input name="comment_1" /></td>
+    </tr>
+  `;
+  cardCount = 1;
+  updateQtyTotal();
+
+  // Regenerate confirmation number
+  const now = new Date();
+  formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+  document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
+  document.getElementById("confirm-number-bottom").textContent = formNumber;
 }
