@@ -6,16 +6,16 @@ const formNumber = `COL_WLD-${now.toISOString().slice(0, 10).replace(/-/g, '')}-
 
 document.addEventListener("DOMContentLoaded", () => {
   // Set confirmation numbers
-  document.getElementById("confirm-number").textContent = `Confirmation #: ${formNumber}`;
   document.getElementById("confirm-number-bottom").textContent = formNumber;
 
-  // Monitor qty inputs for real-time total updates
+  // Watch for qty input changes and calculate total
   document.getElementById("card-form").addEventListener("input", (e) => {
     if (e.target.name?.startsWith("qty_")) {
       updateQtyTotal();
     }
   });
 
+  // Trigger qty calculation initially
   updateQtyTotal();
 });
 
@@ -25,24 +25,22 @@ function addLine() {
   const row = document.createElement("tr");
   row.innerHTML = `
     <td>${cardCount}</td>
-    <td><input name="qty_${cardCount}" /></td>
-    <td><input name="year_${cardCount}" /></td>
-    <td><input name="manufacturer_${cardCount}" /></td>
-    <td><input name="setname_${cardCount}" /></td>
-    <td><input name="cardnum_${cardCount}" /></td>
-    <td><input name="player_${cardCount}" /></td>
-    <td><input name="comment_${cardCount}" /></td>
+    <td><input name="qty_${cardCount}"></td>
+    <td><input name="year_${cardCount}"></td>
+    <td><input name="manufacturer_${cardCount}"></td>
+    <td><input name="setname_${cardCount}"></td>
+    <td><input name="cardnum_${cardCount}"></td>
+    <td><input name="player_${cardCount}"></td>
+    <td><input name="comment_${cardCount}"></td>
   `;
   tbody.appendChild(row);
-
-  row.querySelector(`input[name="qty_${cardCount}"]`).addEventListener("input", updateQtyTotal);
 }
 
 function updateQtyTotal() {
   let total = 0;
   for (let i = 1; i <= cardCount; i++) {
-    const input = document.querySelector(`[name='qty_${i}']`);
-    const val = input?.value;
+    const qtyInput = document.querySelector(`[name='qty_${i}']`);
+    const val = qtyInput?.value;
     const num = parseInt(val);
     if (!isNaN(num)) {
       total += num;
@@ -51,16 +49,17 @@ function updateQtyTotal() {
   document.getElementById("qty-total").value = total;
 }
 
-async function submitThenPrint() {
+async function submitFormData() {
   const form = document.getElementById("card-form");
 
   if (!form.checkValidity()) {
     alert("Please fill out all required fields and agree to the terms.");
-    return;
+    return false;
   }
 
   const formData = new FormData(form);
   formData.set("form_number", formNumber);
+  formData.set("qty-total", document.getElementById("qty-total").value);
 
   const jsonData = {};
   formData.forEach((value, key) => {
@@ -76,9 +75,19 @@ async function submitThenPrint() {
     });
 
     alert("Submission successful!");
-    window.print();
+    return true;
   } catch (error) {
     console.error("Logging failed:", error);
     alert("Submission failed. Please try again.");
+    return false;
+  }
+}
+
+async function submitThenPrint() {
+  const success = await submitFormData();
+  if (success) {
+    window.print();
+  } else {
+    alert("Form submission failed. Please correct errors before printing.");
   }
 }
